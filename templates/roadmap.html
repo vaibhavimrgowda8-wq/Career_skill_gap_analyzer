@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Career Learning Roadmap | CareerPath AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/roadmap.css') }}">
+</head>
+
+<body>
+
+<!-- NAVIGATION BAR -->
+
+<header class="navbar">
+
+    <div class="logo">
+        CareerPath AI
+    </div>
+
+    <nav>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('recommendations') }}">Recommendations</a>
+        <a href="{{ url_for('roadmap') }}">Roadmap</a>
+        <a href="{{ url_for('resources') }}">Resources</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+
+</header>
+
+
+<!-- MAIN CONTAINER -->
+
+<main class="container">
+
+
+    <!-- WELCOME SECTION -->
+
+    <section class="welcome-section">
+
+        <h1>Your Personalized Learning Roadmap</h1>
+
+        <p>
+            Welcome, {{ name }}!
+        </p>
+
+        <p>
+            Build your technical skills step by step
+            and move closer to achieving your dream career.
+        </p>
+
+        <p>
+            Selected Career:
+            <strong>{{ career }}</strong>
+        </p>
+
+    </section>
+
+
+    <!-- CAREER SELECTION -->
+
+    <section class="roadmap-card">
+
+        <h2>Select Your Career Path</h2>
+
+        <p>
+            Choose the career you want to prepare for.
+        </p>
+
+        <select id="career-select">
+
+            <option value="Software Developer"
+                {% if career == "Software Developer" %}selected{% endif %}>
+                Software Developer
+            </option>
+
+            <option value="Web Developer"
+                {% if career == "Web Developer" %}selected{% endif %}>
+                Web Developer
+            </option>
+
+            <option value="Data Scientist"
+                {% if career == "Data Scientist" %}selected{% endif %}>
+                Data Scientist
+            </option>
+
+            <option value="Data Analyst"
+                {% if career == "Data Analyst" %}selected{% endif %}>
+                Data Analyst
+            </option>
+
+            <option value="AI Engineer"
+                {% if career == "AI Engineer" %}selected{% endif %}>
+                AI Engineer
+            </option>
+
+            <option value="Cybersecurity Analyst"
+                {% if career == "Cybersecurity Analyst" %}selected{% endif %}>
+                Cybersecurity Analyst
+            </option>
+
+        </select>
+
+
+        <h2>Enter Your Existing Skills</h2>
+
+        <p>
+            Enter your current skills separated by commas.
+        </p>
+
+        <textarea
+            id="existing-skills"
+            placeholder="Example: Python, HTML, CSS, SQL"
+        >{{ saved_skills }}</textarea>
+
+
+        <button
+            type="button"
+            id="analyze-skills"
+            class="primary-btn">
+
+            Analyze My Skills
+
+        </button>
+
+    </section>
+
+
+    <!-- SKILL GAP ANALYSIS -->
+
+    <section class="roadmap-card">
+
+        <h2>Skill Gap Analysis</h2>
+
+        <p>
+            Find out which skills you already have
+            and which skills you need to develop.
+        </p>
+
+        <div id="skill-gap-results">
+
+            <p>
+                Enter your skills and click Analyze My Skills
+                to calculate your career readiness.
+            </p>
+
+        </div>
+
+        <div id="career-recommendation">
+
+        </div>
+
+    </section>
+
+
+    <!-- LEARNING PROGRESS -->
+
+    <section class="roadmap-card">
+
+        <h2>Overall Learning Progress</h2>
+
+        <p>
+            Track your progress by completing the skills
+            in your personalized roadmap.
+        </p>
+
+        <div class="progress-container">
+
+            <div class="progress-bar">
+
+                <div id="progress-fill"></div>
+
+            </div>
+
+            <p id="progress-text">
+                0% Completed
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- PERSONALIZED ROADMAP -->
+
+    <section class="roadmap-card">
+
+        <h2>Your Personalized Roadmap</h2>
+
+        <p>
+            Follow these learning steps to improve
+            your technical knowledge.
+        </p>
+
+        <div id="personalized-roadmap">
+
+        </div>
+
+    </section>
+
+
+    <!-- LEARNING RESOURCES -->
+
+    <section class="roadmap-card">
+
+        <h2>Explore Learning Resources</h2>
+
+        <p>
+            Access useful tutorials and websites
+            to develop your missing skills.
+        </p>
+
+        <a href="{{ url_for('resources') }}"
+           class="primary-btn">
+
+            Explore Learning Resources
+
+        </a>
+
+    </section>
+
+
+    <!-- BACK TO PROFILE -->
+
+    <div class="back-button">
+
+        <a href="{{ url_for('profile') }}"
+           class="primary-btn">
+
+            Back to Profile
+
+        </a>
+
+    </div>
+
+
+</main>
+
+
+<!-- JAVASCRIPT -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

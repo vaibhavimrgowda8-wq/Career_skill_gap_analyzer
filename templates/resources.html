@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Learning Resources | CareerPath AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/roadmap.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- NAVIGATION BAR -->
+
+<header class="navbar">
+
+    <div class="logo">
+        CareerPath AI
+    </div>
+
+    <nav>
+
+        <a href="{{ url_for('profile') }}">Profile</a>
+
+        <a href="{{ url_for('recommendations') }}">
+            Recommendations
+        </a>
+
+        <a href="{{ url_for('roadmap') }}">
+            Roadmap
+        </a>
+
+        <a href="{{ url_for('resources') }}">
+            Resources
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- MAIN CONTAINER -->
+
+<main class="container">
+
+
+    <!-- WELCOME SECTION -->
+
+    <section class="welcome-section">
+
+        <h1>Learning Resources</h1>
+
+        <p>
+            Welcome, {{ name }}!
+        </p>
+
+        <p>
+            Explore useful websites and tutorials
+            to improve your technical skills.
+        </p>
+
+    </section>
+
+
+    <!-- RESOURCE SECTION -->
+
+    <section class="roadmap-card">
+
+        <h2>Recommended Learning Resources</h2>
+
+        <p id="resource-message">
+
+            {% if missing_skills %}
+                Showing learning resources for your missing skills.
+            {% else %}
+                No missing skills were supplied.
+                Explore all available learning resources below.
+            {% endif %}
+
+        </p>
+
+
+        <div class="resource-grid" id="resource-list">
+
+
+            <!-- HTML -->
+
+            {% if not missing_skills or "HTML" in missing_skills %}
+
+            <div class="resource-card" data-skill="HTML">
+
+                <h3>HTML</h3>
+
+                <p>
+                    Learn the structure of web pages
+                    using HyperText Markup Language.
+                </p>
+
+                <a href="https://developer.mozilla.org/en-US/docs/Web/HTML"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn HTML
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- CSS -->
+
+            {% if not missing_skills or "CSS" in missing_skills %}
+
+            <div class="resource-card" data-skill="CSS">
+
+                <h3>CSS</h3>
+
+                <p>
+                    Learn website styling, layouts
+                    and responsive design.
+                </p>
+
+                <a href="https://developer.mozilla.org/en-US/docs/Web/CSS"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn CSS
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- JAVASCRIPT -->
+
+            {% if not missing_skills or "JavaScript" in missing_skills %}
+
+            <div class="resource-card" data-skill="JavaScript">
+
+                <h3>JavaScript</h3>
+
+                <p>
+                    Learn interactive web development
+                    and programming fundamentals.
+                </p>
+
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn JavaScript
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- PYTHON -->
+
+            {% if not missing_skills or "Python" in missing_skills %}
+
+            <div class="resource-card" data-skill="Python">
+
+                <h3>Python</h3>
+
+                <p>
+                    Learn Python programming
+                    and problem-solving.
+                </p>
+
+                <a href="https://www.python.org/about/gettingstarted/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Python
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- JAVA -->
+
+            {% if not missing_skills or "Java" in missing_skills %}
+
+            <div class="resource-card" data-skill="Java">
+
+                <h3>Java</h3>
+
+                <p>
+                    Learn Java programming fundamentals.
+                </p>
+
+                <a href="https://dev.java/learn/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Java
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- DATA STRUCTURES -->
+
+            {% if not missing_skills or "Data Structures" in missing_skills %}
+
+            <div class="resource-card" data-skill="Data Structures">
+
+                <h3>Data Structures</h3>
+
+                <p>
+                    Learn fundamental data structures
+                    and algorithms.
+                </p>
+
+                <a href="https://www.geeksforgeeks.org/data-structures/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Data Structures
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- SQL -->
+
+            {% if not missing_skills or "SQL" in missing_skills %}
+
+            <div class="resource-card" data-skill="SQL">
+
+                <h3>SQL</h3>
+
+                <p>
+                    Learn database management
+                    and SQL queries.
+                </p>
+
+                <a href="https://www.w3schools.com/sql/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn SQL
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- GIT -->
+
+            {% if not missing_skills or "Git" in missing_skills %}
+
+            <div class="resource-card" data-skill="Git">
+
+                <h3>Git</h3>
+
+                <p>
+                    Learn version control
+                    and source code management.
+                </p>
+
+                <a href="https://git-scm.com/doc"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Git
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- REACT -->
+
+            {% if not missing_skills or "React" in missing_skills %}
+
+            <div class="resource-card" data-skill="React">
+
+                <h3>React</h3>
+
+                <p>
+                    Learn modern frontend development
+                    using React.
+                </p>
+
+                <a href="https://react.dev/learn"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn React
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- DJANGO -->
+
+            {% if not missing_skills or "Django" in missing_skills %}
+
+            <div class="resource-card" data-skill="Django">
+
+                <h3>Django</h3>
+
+                <p>
+                    Learn Python web application development.
+                </p>
+
+                <a href="https://docs.djangoproject.com/en/stable/intro/tutorial01/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Django
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- EXCEL -->
+
+            {% if not missing_skills or "Excel" in missing_skills %}
+
+            <div class="resource-card" data-skill="Excel">
+
+                <h3>Excel</h3>
+
+                <p>
+                    Learn spreadsheet management
+                    and data analysis.
+                </p>
+
+                <a href="https://support.microsoft.com/en-us/excel"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Excel
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- POWER BI -->
+
+            {% if not missing_skills or "Power BI" in missing_skills %}
+
+            <div class="resource-card" data-skill="Power BI">
+
+                <h3>Power BI</h3>
+
+                <p>
+                    Learn data visualization,
+                    dashboards and reporting.
+                </p>
+
+                <a href="https://learn.microsoft.com/en-us/training/powerplatform/power-bi"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Power BI
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- STATISTICS -->
+
+            {% if not missing_skills or "Statistics" in missing_skills %}
+
+            <div class="resource-card" data-skill="Statistics">
+
+                <h3>Statistics</h3>
+
+                <p>
+                    Build your statistics
+                    and probability fundamentals.
+                </p>
+
+                <a href="https://www.khanacademy.org/math/statistics-probability"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Statistics
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- MACHINE LEARNING -->
+
+            {% if not missing_skills or "Machine Learning" in missing_skills %}
+
+            <div class="resource-card" data-skill="Machine Learning">
+
+                <h3>Machine Learning</h3>
+
+                <p>
+                    Understand machine learning
+                    concepts and applications.
+                </p>
+
+                <a href="https://developers.google.com/machine-learning/crash-course"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Machine Learning
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- DEEP LEARNING -->
+
+            {% if not missing_skills or "Deep Learning" in missing_skills %}
+
+            <div class="resource-card" data-skill="Deep Learning">
+
+                <h3>Deep Learning</h3>
+
+                <p>
+                    Explore neural networks
+                    and deep learning concepts.
+                </p>
+
+                <a href="https://www.deeplearning.ai/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Deep Learning
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- MATHEMATICS -->
+
+            {% if not missing_skills or "Mathematics" in missing_skills %}
+
+            <div class="resource-card" data-skill="Mathematics">
+
+                <h3>Mathematics</h3>
+
+                <p>
+                    Improve mathematical fundamentals
+                    for technical careers.
+                </p>
+
+                <a href="https://www.khanacademy.org/math"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Mathematics
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- TENSORFLOW -->
+
+            {% if not missing_skills or "TensorFlow" in missing_skills %}
+
+            <div class="resource-card" data-skill="TensorFlow">
+
+                <h3>TensorFlow</h3>
+
+                <p>
+                    Learn machine learning
+                    using TensorFlow.
+                </p>
+
+                <a href="https://www.tensorflow.org/tutorials"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn TensorFlow
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- NETWORKING -->
+
+            {% if not missing_skills or "Networking" in missing_skills %}
+
+            <div class="resource-card" data-skill="Networking">
+
+                <h3>Networking</h3>
+
+                <p>
+                    Understand computer networking
+                    fundamentals.
+                </p>
+
+                <a href="https://www.netacad.com/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Networking
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- LINUX -->
+
+            {% if not missing_skills or "Linux" in missing_skills %}
+
+            <div class="resource-card" data-skill="Linux">
+
+                <h3>Linux</h3>
+
+                <p>
+                    Learn Linux operating system
+                    fundamentals.
+                </p>
+
+                <a href="https://www.linuxjourney.com/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Linux
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- CYBERSECURITY BASICS -->
+
+            {% if not missing_skills or "Cybersecurity Basics" in missing_skills %}
+
+            <div class="resource-card" data-skill="Cybersecurity Basics">
+
+                <h3>Cybersecurity Basics</h3>
+
+                <p>
+                    Understand cybersecurity principles
+                    and online safety.
+                </p>
+
+                <a href="https://www.cisa.gov/cybersecurity"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Cybersecurity
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- CRYPTOGRAPHY -->
+
+            {% if not missing_skills or "Cryptography" in missing_skills %}
+
+            <div class="resource-card" data-skill="Cryptography">
+
+                <h3>Cryptography</h3>
+
+                <p>
+                    Understand cryptography
+                    and data protection fundamentals.
+                </p>
+
+                <a href="https://cryptography.io/en/latest/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Cryptography
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- DATA VISUALIZATION -->
+
+            {% if not missing_skills or "Data Visualization" in missing_skills %}
+
+            <div class="resource-card" data-skill="Data Visualization">
+
+                <h3>Data Visualization</h3>
+
+                <p>
+                    Learn how to represent
+                    and communicate data visually.
+                </p>
+
+                <a href="https://www.tableau.com/learn"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Learn Data Visualization
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+        </div>
+
+
+        <!-- NO MATCHING RESOURCES -->
+
+        {% if missing_skills %}
+
+            <p>
+                If a skill does not have a listed learning resource,
+                consult its official documentation or a suitable
+                learning platform.
+            </p>
+
+        {% endif %}
+
+
+    </section>
+
+
+    <!-- NAVIGATION BUTTONS -->
+
+    <div class="back-button">
+
+        <a href="{{ url_for('roadmap') }}"
+           class="primary-btn">
+
+            Back to Roadmap
+
+        </a>
+
+        <br>
+
+        <a href="{{ url_for('profile') }}"
+           class="primary-btn">
+
+            Back to Profile
+
+        </a>
+
+    </div>
+
+
+</main>
+
+</body>
+</html>

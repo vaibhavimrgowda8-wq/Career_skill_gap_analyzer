@@ -1,0 +1,255 @@
+/* ==========================================
+   CAREERPATH AI - SKILL ANALYSIS
+   ========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f3ef;
+    color: #333;
+    min-height: 100vh;
+    padding: 30px 15px;
+}
+
+/* MAIN CONTAINER */
+
+.container,
+.analysis-container,
+.results-container {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 35px 40px;
+    background: #fff;
+    border-radius: 12px;
+}
+
+/* HEADINGS */
+
+h1 {
+    color: #263b5e;
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+h2 {
+    color: #263b5e;
+    font-size: 22px;
+    margin: 10px 0 15px;
+}
+
+h3 {
+    color: #263b5e;
+    margin: 15px 0 10px;
+}
+
+/* SUBTITLE */
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+/* SECTIONS */
+
+.analysis-card {
+    background: #f5f5f5;
+    padding: 25px;
+    margin-bottom: 22px;
+    border-radius: 10px;
+}
+
+/* TEXT */
+
+p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #444;
+    margin-bottom: 12px;
+}
+
+strong {
+    color: #263b5e;
+}
+
+/* LISTS */
+
+ul {
+    padding-left: 25px;
+    margin: 12px 0 20px;
+}
+
+li {
+    padding: 6px 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* SKILL COLORS */
+
+.existing-skills li {
+    color: #1976a5;
+}
+
+.required-skills li {
+    color: #263b5e;
+}
+
+.matched-skills li {
+    color: #21834d;
+}
+
+.missing-skills li {
+    color: #c46b24;
+}
+
+/* READINESS */
+
+.percentage {
+    text-align: center;
+    font-size: 48px;
+    font-weight: bold;
+    color: #1679c5;
+    margin: 20px 0;
+}
+
+/* PROGRESS BAR */
+
+.progress-bar {
+    width: 100%;
+    height: 18px;
+    background: #ddd;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        #087ac1,
+        #3156c9
+    );
+    border-radius: 20px;
+    transition: width 0.5s ease;
+}
+
+/* READINESS MESSAGE */
+
+.readiness-message {
+    text-align: center;
+    font-weight: bold;
+    margin: 18px 0;
+    color: #263b5e;
+}
+
+/* BUTTONS */
+
+a.btn,
+button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 16px 20px;
+    margin: 18px 0;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(
+        90deg,
+        #0878bd,
+        #2189d0
+    );
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+a.btn:hover,
+button:hover {
+    background: #075e9d;
+    transform: translateY(-2px);
+}
+
+/* SECONDARY BUTTON */
+
+a.secondary-btn {
+    background: linear-gradient(
+        90deg,
+        #303bb1,
+        #5146ca
+    );
+}
+
+/* BACK BUTTON */
+
+.back-btn {
+    display: block;
+    text-align: center;
+    color: #1679c5;
+    font-weight: bold;
+    text-decoration: none;
+    margin-top: 25px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    body {
+        padding: 15px 10px;
+    }
+
+    .container,
+    .analysis-container,
+    .results-container {
+        padding: 25px 18px;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    h2 {
+        font-size: 19px;
+    }
+
+    .percentage {
+        font-size: 40px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    h1 {
+        font-size: 23px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    .analysis-card {
+        padding: 18px;
+    }
+
+    a.btn,
+    button {
+        font-size: 15px;
+    }
+
+}

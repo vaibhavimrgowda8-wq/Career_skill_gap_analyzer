@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | CareerPath AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<section class="career-form">
+
+    <h1>Welcome to CareerPath AI!</h1>
+
+    <h2>Hello, {{ name }}!</h2>
+
+    <p>Your account is active.</p>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    {% if details %}
+
+        <div class="profile-info">
+            <h3>Your Career Profile</h3>
+
+            <p><strong>Education:</strong> {{ details.education }}</p>
+
+            <p><strong>Course:</strong> {{ details.course }}</p>
+
+            <p><strong>Skills:</strong> {{ details.skills }}</p>
+
+            <p><strong>Desired Career:</strong> {{ details.career }}</p>
+        </div>
+
+    {% else %}
+
+        <p>You have not completed your career profile yet.</p>
+
+    {% endif %}
+
+    <h3>What would you like to do next?</h3>
+
+    <a href="{{ url_for('career_details') }}" class="primary-btn">
+        {% if details %}
+            Update Career Profile
+        {% else %}
+            Complete Career Profile
+        {% endif %}
+    </a>
+
+    <a href="{{ url_for('skill_analysis') }}" class="primary-btn">
+        Analyze My Skills
+    </a>
+
+    <a href="{{ url_for('recommendations') }}" class="secondary-btn">
+        View Career Recommendations
+    </a>
+
+    <a href="{{ url_for('roadmap') }}" class="primary-btn">
+        View Learning Roadmap
+    </a>
+
+    <a href="{{ url_for('logout') }}" class="logout-btn">
+        Logout
+    </a>
+
+</section>
+
+</body>
+</html>

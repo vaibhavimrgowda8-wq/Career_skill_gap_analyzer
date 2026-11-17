@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Career Recommendations | CareerPath AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<section class="career-form">
+
+    <h1>Career Recommendations</h1>
+
+    <h2>Hello, {{ name }}!</h2>
+
+    <div class="profile-info">
+
+        <h3>Your Desired Career</h3>
+        <p>{{ career }}</p>
+
+        <h3>Your Current Skills</h3>
+
+        {% if skills %}
+            <ul>
+                {% for skill in skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No skills entered.</p>
+        {% endif %}
+
+        <h3>Required Skills</h3>
+
+        <ul>
+            {% for skill in required_skills %}
+                <li>{{ skill }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Skills You Should Develop</h3>
+
+        {% if missing_skills %}
+
+            <ul>
+                {% for skill in missing_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+
+            <p>
+                Congratulations! You have all the listed required skills.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    <a href="{{ url_for('skill_analysis') }}" class="primary-btn">
+        View Detailed Skill Analysis
+    </a>
+
+    <a href="{{ url_for('roadmap') }}" class="primary-btn">
+        View Learning Roadmap
+    </a>
+
+    <a href="{{ url_for('profile') }}" class="secondary-btn">
+        Back to Profile
+    </a>
+
+</section>
+
+</body>
+</html>

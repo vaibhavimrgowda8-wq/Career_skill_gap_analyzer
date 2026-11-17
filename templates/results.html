@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Skill Analysis Results | CareerPath AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/analysis.css') }}">
+
+</head>
+
+<body>
+
+<div class="container results-container">
+
+    <h1>Your Career Skill Analysis</h1>
+
+    <p class="subtitle">
+        Hello {{ name }}! Here is your personalized skill gap report.
+    </p>
+
+
+    <section class="analysis-card">
+
+        <h2>Selected Career</h2>
+
+        <p>{{ result.career }}</p>
+
+    </section>
+
+
+    <section class="analysis-card">
+
+        <h2>Your Existing Skills</h2>
+
+        {% if result.existing_skills %}
+
+            <ul class="existing-skills">
+
+                {% for skill in result.existing_skills %}
+
+                    <li>{{ skill }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No skills entered.</p>
+
+        {% endif %}
+
+    </section>
+
+
+    <section class="analysis-card">
+
+        <h2>Required Skills</h2>
+
+        <ul class="required-skills">
+
+            {% for skill in result.required_skills %}
+
+                <li>{{ skill }}</li>
+
+            {% endfor %}
+
+        </ul>
+
+    </section>
+
+
+    <section class="analysis-card">
+
+        <h2>Matched Skills</h2>
+
+        {% if result.matched_skills %}
+
+            <ul class="matched-skills">
+
+                {% for skill in result.matched_skills %}
+
+                    <li>{{ skill }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No matched skills yet.</p>
+
+        {% endif %}
+
+    </section>
+
+
+    <section class="analysis-card">
+
+        <h2>Missing Skills</h2>
+
+        {% if result.missing_skills %}
+
+            <ul class="missing-skills">
+
+                {% for skill in result.missing_skills %}
+
+                    <li>{{ skill }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>
+                Congratulations! You have all the listed required skills.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+
+    <section class="analysis-card">
+
+        <h2>Career Readiness</h2>
+
+        <div class="percentage">
+            {{ result.readiness }}%
+        </div>
+
+        <div class="progress-bar">
+
+            <div class="progress"
+                 style="width: {{ result.readiness }}%;">
+            </div>
+
+        </div>
+
+        <p class="readiness-message">
+
+            {% if result.readiness >= 80 %}
+
+                Excellent! You have a strong skill foundation.
+
+            {% elif result.readiness >= 50 %}
+
+                Good progress! Keep developing your skills.
+
+            {% else %}
+
+                Keep learning! Focus on improving your missing skills.
+
+            {% endif %}
+
+        </p>
+
+    </section>
+
+
+    <section class="analysis-card">
+
+        <h2>Suggested Skills to Learn</h2>
+
+        {% if result.missing_skills %}
+
+            <p>Focus on developing these skills:</p>
+
+            <ul>
+
+                {% for skill in result.missing_skills %}
+
+                    <li>Learn {{ skill }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>You have covered all the listed required skills!</p>
+
+        {% endif %}
+
+    </section>
+
+
+    <a href="{{ url_for('recommendations') }}" class="btn">
+        View Career Recommendations
+    </a>
+
+    <a href="{{ url_for('roadmap') }}" class="btn secondary-btn">
+        View Learning Roadmap
+    </a>
+
+    <a href="{{ url_for('profile') }}" class="back-btn">
+        Back to Profile
+    </a>
+
+</div>
+
+</body>
+</html>
