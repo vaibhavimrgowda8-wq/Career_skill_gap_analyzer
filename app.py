@@ -1,497 +1,533 @@
-import sqlite3
-
-from flask import (
-    Flask,
-    render_template,
-    request,
-    redirect,
-    url_for,
-    session,
-    flash
-)
-
-from werkzeug.security import (
-    generate_password_hash,
-    check_password_hash
-)
-
-from modules.skill_analysis import analyze_skills
-
 import os
+import json
+import urllib.request
+import urllib.error
+
+from flask import Flask, request, jsonify, render_template_string
+
 app = Flask(__name__)
 
-app.secret_key = os.environ.get("SECRET_KEY")
-
-DATABASE = "users.db"
+app.config["JSON_SORT_KEYS"] = False
 
 
-# ==========================================
-# DATABASE CONNECTION
-# ==========================================
+# -----------------------------------
+# CAREERPATH AI - MAIN WEBSITE
+# -----------------------------------
 
-def get_db():
+HTML = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    conn = sqlite3.connect(DATABASE)
+    <title>CareerPath AI | Discover Your Future</title>
 
-    conn.row_factory = sqlite3.Row
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    return conn
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6ff;
+            color: #222;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4338ca, #7c3aed);
+            color: white;
+            padding: 25px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            font-size: 27px;
+        }
+
+        header span {
+            font-size: 14px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 65px 20px 35px;
+        }
+
+        .hero h2 {
+            font-size: 38px;
+            color: #312e81;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #666;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 25px auto 60px;
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #3730a3;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        #result {
+            display: none;
+            margin-top: 30px;
+            padding: 22px;
+            background: #f0f0ff;
+            border-radius: 10px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 20px auto 60px;
+            padding: 0 20px;
+        }
+
+        .feature {
+            background: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+        }
+
+        .feature h3 {
+            color: #4338ca;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #312e81;
+            color: white;
+        }
+
+        @media(max-width: 600px) {
+            .hero h2 {
+                font-size: 29px;
+            }
+
+            .container {
+                margin: 20px;
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🚀 CareerPath AI</h1>
+    <span>Your Future Starts Here</span>
+</header>
+
+<section class="hero">
+    <h2>Discover Your Perfect Career</h2>
+    <p>
+        Let AI understand your interests, skills and goals
+        <br>
+        and help you build your future.
+    </p>
+</section>
+
+<div class="container">
+
+    <h2>Career Assessment</h2>
+
+    <form id="careerForm">
+
+        <label>Your Name</label>
+        <input type="text" id="name" placeholder="Enter your name" required>
+
+        <label>Your Education Level</label>
+        <select id="education" required>
+            <option value="">Select education</option>
+            <option>School Student</option>
+            <option>High School Graduate</option>
+            <option>Undergraduate</option>
+            <option>Graduate</option>
+            <option>Postgraduate</option>
+            <option>Working Professional</option>
+        </select>
+
+        <label>Your Interests</label>
+        <textarea id="interests"
+            placeholder="Example: Technology, business, science, design..."
+            required></textarea>
+
+        <label>Your Skills</label>
+        <textarea id="skills"
+            placeholder="Example: Communication, programming, creativity..."
+            required></textarea>
+
+        <label>Your Career Goal</label>
+        <select id="goal" required>
+            <option value="">Select your goal</option>
+            <option>Get a Job</option>
+            <option>Start a Business</option>
+            <option>Become an Entrepreneur</option>
+            <option>Higher Education</option>
+            <option>Improve My Skills</option>
+            <option>Explore Career Options</option>
+        </select>
+
+        <button type="submit" id="submitBtn">
+            Generate My Career Roadmap ✨
+        </button>
+
+    </form>
+
+    <div id="result"></div>
+
+</div>
+
+<section class="features">
+
+    <div class="feature">
+        <h3>🎯 Career Discovery</h3>
+        <p>Explore career opportunities based on your interests.</p>
+    </div>
+
+    <div class="feature">
+        <h3>🧠 AI Guidance</h3>
+        <p>Receive personalized career recommendations.</p>
+    </div>
+
+    <div class="feature">
+        <h3>📚 Skill Development</h3>
+        <p>Identify skills you need to achieve your goals.</p>
+    </div>
+
+    <div class="feature">
+        <h3>🛣️ Career Roadmap</h3>
+        <p>Get a step-by-step plan for your future.</p>
+    </div>
+
+</section>
+
+<footer>
+    <p>© 2026 CareerPath AI. All Rights Reserved.</p>
+    <p>Empowering Your Future with Artificial Intelligence.</p>
+</footer>
+
+<script>
+
+const form = document.getElementById("careerForm");
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const button = document.getElementById("submitBtn");
+    const result = document.getElementById("result");
+
+    const data = {
+        name: document.getElementById("name").value,
+        education: document.getElementById("education").value,
+        interests: document.getElementById("interests").value,
+        skills: document.getElementById("skills").value,
+        goal: document.getElementById("goal").value
+    };
+
+    button.disabled = true;
+    button.innerText = "Generating Your Career Roadmap...";
+
+    result.style.display = "block";
+    result.innerText = "Please wait. CareerPath AI is analyzing your profile...";
+
+    try {
+
+        const response = await fetch("/api/career-plan", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const answer = await response.json();
+
+        if (!response.ok) {
+            throw new Error(answer.error || "Something went wrong.");
+        }
+
+        result.innerText = answer.result;
+
+    } catch(error) {
+
+        result.innerText = "Error: " + error.message;
+
+    } finally {
+
+        button.disabled = false;
+        button.innerText = "Generate My Career Roadmap ✨";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
+"""
 
 
-def init_db():
-
-    conn = get_db()
-
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
-        )
-    """)
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS profile_details (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER UNIQUE,
-            education TEXT,
-            course TEXT,
-            skills TEXT,
-            career TEXT,
-            FOREIGN KEY(user_id) REFERENCES users(id)
-        )
-    """)
-
-    conn.commit()
-
-    conn.close()
-
-
-# ==========================================
-# LOGIN PROTECTION
-# ==========================================
-
-def login_required():
-
-    if "user_id" not in session:
-
-        flash("Please login first.")
-
-        return False
-
-    return True
-
-
-# ==========================================
-# GET USER PROFILE
-# ==========================================
-
-def get_user_profile():
-
-    conn = get_db()
-
-    profile = conn.execute("""
-        SELECT *
-        FROM profile_details
-        WHERE user_id = ?
-    """, (session["user_id"],)).fetchone()
-
-    conn.close()
-
-    return profile
-
-
-# ==========================================
-# HOME
-# ==========================================
+# -----------------------------------
+# HOME PAGE
+# -----------------------------------
 
 @app.route("/")
 def home():
+    return render_template_string(HTML)
 
-    return render_template("index.html")
 
+# -----------------------------------
+# AI CAREER RECOMMENDATION
+# -----------------------------------
 
-# ==========================================
-# REGISTER
-# ==========================================
+def generate_career_plan(data):
 
-@app.route("/register", methods=["GET", "POST"])
-def register():
+    api_key = os.environ.get("OPENAI_API_KEY")
 
-    if request.method == "POST":
-
-        name = request.form.get("name", "").strip()
-
-        email = request.form.get("email", "").strip().lower()
-
-        password = request.form.get("password", "")
-
-        if not name or not email or not password:
-
-            flash("Please fill in all fields.")
-
-            return redirect(url_for("register"))
-
-        if len(password) < 8:
-
-            flash("Password must contain at least 8 characters.")
-
-            return redirect(url_for("register"))
-
-        hashed_password = generate_password_hash(password)
-
-        conn = get_db()
-
-        try:
-
-            conn.execute("""
-                INSERT INTO users (name, email, password)
-                VALUES (?, ?, ?)
-            """, (name, email, hashed_password))
-
-            conn.commit()
-
-            flash("Registration successful! Please login.")
-
-            return redirect(url_for("login"))
-
-        except sqlite3.IntegrityError:
-
-            flash("Email already registered.")
-
-        finally:
-
-            conn.close()
-
-    return render_template("register.html")
-
-
-# ==========================================
-# LOGIN
-# ==========================================
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-
-    if request.method == "POST":
-
-        email = request.form.get("email", "").strip().lower()
-
-        password = request.form.get("password", "")
-
-        conn = get_db()
-
-        user = conn.execute("""
-            SELECT *
-            FROM users
-            WHERE email = ?
-        """, (email,)).fetchone()
-
-        conn.close()
-
-        if user and check_password_hash(user["password"], password):
-
-            session.clear()
-
-            session["user_id"] = user["id"]
-
-            session["name"] = user["name"]
-
-            flash("Login successful!")
-
-            return redirect(url_for("profile"))
-
-        flash("Invalid email or password.")
-
-    return render_template("login.html")
-
-
-# ==========================================
-# PROFILE
-# ==========================================
-
-@app.route("/profile")
-def profile():
-
-    if not login_required():
-
-        return redirect(url_for("login"))
-
-    profile_data = get_user_profile()
-
-    return render_template(
-        "profile.html",
-        name=session["name"],
-        details=profile_data
-    )
-
-
-# ==========================================
-# CAREER DETAILS
-# ==========================================
-
-@app.route("/career-details", methods=["GET", "POST"])
-def career_details():
-
-    if not login_required():
-
-        return redirect(url_for("login"))
-
-    if request.method == "POST":
-
-        education = request.form.get("education", "").strip()
-
-        course = request.form.get("course", "").strip()
-
-        skills = request.form.get("skills", "").strip()
-
-        career = request.form.get("career", "").strip()
-
-        if not all([education, course, skills, career]):
-
-            flash("Please complete all career profile fields.")
-
-            return redirect(url_for("career_details"))
-
-        conn = get_db()
-
-        existing = conn.execute("""
-            SELECT id
-            FROM profile_details
-            WHERE user_id = ?
-        """, (session["user_id"],)).fetchone()
-
-        if existing:
-
-            conn.execute("""
-                UPDATE profile_details
-                SET education = ?,
-                    course = ?,
-                    skills = ?,
-                    career = ?
-                WHERE user_id = ?
-            """, (
-                education,
-                course,
-                skills,
-                career,
-                session["user_id"]
-            ))
-
-        else:
-
-            conn.execute("""
-                INSERT INTO profile_details
-                (user_id, education, course, skills, career)
-                VALUES (?, ?, ?, ?, ?)
-            """, (
-                session["user_id"],
-                education,
-                course,
-                skills,
-                career
-            ))
-
-        conn.commit()
-
-        conn.close()
-
-        flash("Career details saved successfully!")
-
-        return redirect(url_for("profile"))
-
-    profile_data = get_user_profile()
-
-    return render_template(
-        "career_details.html",
-        details=profile_data
-    )
-
-
-# ==========================================
-# CAREER RECOMMENDATIONS
-# ==========================================
-
-@app.route("/recommendations")
-def recommendations():
-
-    if not login_required():
-
-        return redirect(url_for("login"))
-
-    profile_data = get_user_profile()
-
-    if not profile_data:
-
-        flash("Please complete your career details first.")
-
-        return redirect(url_for("career_details"))
-
-    career = profile_data["career"]
-
-    skills_text = profile_data["skills"] or ""
-
-    student_skills = [
-        skill.strip()
-        for skill in skills_text.split(",")
-        if skill.strip()
-    ]
-
-    result = analyze_skills(career, student_skills)
-
-    return render_template(
-        "recommendations.html",
-        name=session["name"],
-        career=result["career"],
-        skills=result["existing_skills"],
-        required_skills=result["required_skills"],
-        missing_skills=result["missing_skills"]
-    )
-
-
-# ==========================================
-# MEMBER 2: SKILL GAP ANALYSIS
-# ==========================================
-
-@app.route("/skill-analysis", methods=["GET", "POST"])
-def skill_analysis():
-
-    if not login_required():
-
-        return redirect(url_for("login"))
-
-    profile_data = get_user_profile()
-
-    if not profile_data:
-
-        flash("Please complete your career details first.")
-
-        return redirect(url_for("career_details"))
-
-    if request.method == "POST":
-
-        career = request.form.get(
-            "career",
-            profile_data["career"]
-        ).strip()
-
-        skills_text = request.form.get(
-            "skills",
-            profile_data["skills"] or ""
+    if not api_key:
+        return (
+            "AI service is not configured yet. "
+            "Please add your OPENAI_API_KEY in Render environment variables."
         )
 
-    else:
+    prompt = f"""
+You are CareerPath AI, a professional career guidance assistant.
 
-        career = profile_data["career"]
+Analyze the following student profile:
 
-        skills_text = profile_data["skills"] or ""
+Name: {data['name']}
+Education: {data['education']}
+Interests: {data['interests']}
+Skills: {data['skills']}
+Career Goal: {data['goal']}
 
-    student_skills = [
-        skill.strip()
-        for skill in skills_text.split(",")
-        if skill.strip()
-    ]
+Create a personalized career guidance report.
 
-    result = analyze_skills(
-        career,
-        student_skills
-    )
+Include:
 
-    if not result["required_skills"]:
+1. A short introduction.
+2. Five suitable career options.
+3. Why each career matches the student's profile.
+4. Important skills to develop.
+5. Recommended courses and certifications.
+6. A practical 6-month learning roadmap.
+7. Suggested beginner projects.
+8. Job and internship preparation advice.
+9. A motivational conclusion.
 
-        flash("Please select a valid career.")
+Use simple language, clear headings and practical advice.
 
-        return redirect(url_for("career_details"))
+Do not guarantee employment or make unsupported salary claims.
+"""
 
-    return render_template(
-        "results.html",
-        name=session["name"],
-        result=result
-    )
-
-# -----------------------------------
-# MEMBER 3: ROADMAP
-# -----------------------------------
-
-@app.route("/roadmap")
-def roadmap():
-
-    if not login_required():
-        return redirect(url_for("login"))
-
-    profile_data = get_user_profile()
-
-    if not profile_data:
-        flash("Please complete your career details first.")
-        return redirect(url_for("career_details"))
-
-    career = profile_data["career"] or ""
-
-    career_mapping = {
-        "Web Developer": "frontend",
-        "Software Developer": "python",
-        "Data Scientist": "data",
-        "Data Analyst": "data",
-        "AI Engineer": "python",
-        "Cybersecurity Analyst": "python",
-        "Other": "python"
+    payload = {
+        "model": "gpt-4o-mini",
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are an expert career counselor."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "temperature": 0.7
     }
 
-    career_key = career_mapping.get(career, "python")
+    request_data = json.dumps(payload).encode("utf-8")
 
-    saved_skills = profile_data["skills"] or ""
-
-    return render_template(
-        "roadmap.html",
-        name=session["name"],
-        career=career,
-        career_key=career_key,
-        saved_skills=saved_skills
-    
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/chat/completions",
+        data=request_data,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        },
+        method="POST"
     )
 
+    try:
+
+        with urllib.request.urlopen(req, timeout=60) as response:
+
+            result = json.loads(response.read().decode("utf-8"))
+
+            return result["choices"][0]["message"]["content"]
+
+    except urllib.error.HTTPError as error:
+
+        details = error.read().decode("utf-8", errors="replace")
+
+        print("OpenAI API error:", details)
+
+        raise RuntimeError(
+            "AI service error. Check your API key and account configuration."
+        )
+
+    except Exception as error:
+
+        print("AI error:", str(error))
+
+        raise RuntimeError(
+            "Unable to generate your career roadmap. Please try again."
+        )
+
+
 # -----------------------------------
-# MEMBER 3: LEARNING RESOURCES
+# CAREER PLAN API
 # -----------------------------------
 
-@app.route("/resources")
-def resources():
+@app.route("/api/career-plan", methods=["POST"])
+def career_plan():
 
-    if not login_required():
-        return redirect(url_for("login"))
+    data = request.get_json(silent=True)
 
-    return render_template(
-        "resources.html",
-        name=session["name"]
-    )
+    if not isinstance(data, dict):
+        return jsonify({
+            "error": "Invalid request data."
+        }), 400
 
-# ==========================================
-# LOGOUT
-# ==========================================
+    required_fields = [
+        "name",
+        "education",
+        "interests",
+        "skills",
+        "goal"
+    ]
 
-@app.route("/logout")
-def logout():
+    for field in required_fields:
 
-    session.clear()
+        value = data.get(field)
 
-    flash("You have been logged out.")
+        if not isinstance(value, str) or not value.strip():
+            return jsonify({
+                "error": f"Please provide your {field}."
+            }), 400
 
-    return redirect(url_for("home"))
+        if len(value) > 2000:
+            return jsonify({
+                "error": f"{field} is too long."
+            }), 400
+
+    try:
+
+        result = generate_career_plan(data)
+
+        return jsonify({
+            "success": True,
+            "result": result
+        })
+
+    except RuntimeError as error:
+
+        return jsonify({
+            "error": str(error)
+        }), 502
 
 
-# ==========================================
+# -----------------------------------
+# HEALTH CHECK
+# -----------------------------------
+
+@app.route("/health")
+def health():
+
+    return jsonify({
+        "status": "healthy",
+        "application": "CareerPath AI"
+    })
+
+
+# -----------------------------------
+# ERROR HANDLING
+# -----------------------------------
+
+@app.errorhandler(404)
+def not_found(error):
+
+    return jsonify({
+        "error": "Page not found."
+    }), 404
+
+
+# -----------------------------------
 # RUN APPLICATION
-# ==========================================
-
-# Initialize database when application starts
-init_db()
+# -----------------------------------
 
 if __name__ == "__main__":
+
+    port = int(os.environ.get("PORT", 5000))
+
     app.run(
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000)),
+        port=port,
         debug=False
     )
